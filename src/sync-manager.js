@@ -97,10 +97,12 @@ class SyncManager extends Root {
    */
   _onlineStateChange(evt) {
     if (evt.eventName === 'connected') {
-      if (this.queue.length) this.queue[0].returnToOnlineCount++;
+      if (this.queue && this.queue.length) {
+        this.queue[0].returnToOnlineCount++;
+      }
       setTimeout(() => this._processNextRequest(), 100);
     } else if (evt.eventName === 'disconnected') {
-      if (this.queue.length) {
+      if (this.queue && this.queue.length) {
         this.queue[0].isFiring = false;
       }
       if (this.receiptQueue.length) {
@@ -148,7 +150,7 @@ class SyncManager extends Root {
 
   _processNextRequest(requestEvt) {
     // Fire the request if there aren't any existing requests already firing
-    if (this.queue.length && !this.queue[0].isFiring) {
+    if (this.queue && this.queue.length && !this.queue[0].isFiring) {
       if (requestEvt) {
         this.client.dbManager.writeSyncEvents([requestEvt], () => this._processNextStandardRequest());
       } else {
@@ -157,7 +159,7 @@ class SyncManager extends Root {
     }
 
     // If we have anything in the receipts queue, fire it
-    if (this.receiptQueue.length) {
+    if (this.receiptQueue && this.receiptQueue.length) {
       this._processNextReceiptRequest();
     }
   }
@@ -503,6 +505,9 @@ class SyncManager extends Root {
    *
    */
   _xhrHandleServerError(result, logMsg, stringify) {
+    if (!result.request) {
+      return;
+    }
     // Execute all callbacks provided by the request
     if (result.request.callback) result.request.callback(result);
     if (stringify) {

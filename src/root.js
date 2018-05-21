@@ -484,7 +484,12 @@ class Root extends EventClass {
    * @return {layer.Root} this
    */
   _triggerAsync(...args) {
+    if (!this._delayedTriggers) {
+      this._delayedTriggers = [];
+    }
+
     const computedArgs = this._getTriggerArgs(...args);
+
     this._delayedTriggers.push(computedArgs);
 
     // NOTE: It is unclear at this time how it happens, but on very rare occasions, we see processDelayedTriggers

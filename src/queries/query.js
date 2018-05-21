@@ -456,8 +456,7 @@ class Query extends Root {
       this.totalSize = Number(results.xhr.getResponseHeader('Layer-Count'));
       if (results.data.length < pageSize || results.data.length === this.totalSize) this.pagedToEnd = true;
       this._appendResults(results, false);
-
-    } else if (results.data.getNonce()) {
+    } else if (results.data && results.data.getNonce && results.data.getNonce()) {
       this.client.once('ready', () => {
         this._run();
       });
@@ -473,6 +472,7 @@ class Query extends Root {
    * @private
    */
   _appendResults(results, fromDb) {
+    results.data = Array.isArray(results.data) ? results.data : [];
     // For all results, register them with the client
     // If already registered with the client, properties will be updated as needed
     // Database results rather than server results will arrive already registered.
