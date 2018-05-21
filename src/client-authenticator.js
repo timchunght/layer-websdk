@@ -1095,13 +1095,13 @@ class ClientAuthenticator extends Root {
           this.isReady = false;
           if (global.localStorage) localStorage.removeItem(LOCALSTORAGE_KEYS.SESSIONDATA + this.appId);
           this.trigger('deauthenticated');
-          if (result.data && result.data.getNonce) {
+          if (result.data && result.data.getNonce && typeof result.data.getNonce === 'function') {
             this._authenticate(result.data.getNonce());
           }
         }
 
         else if (this._lastChallengeTime > Date.now() + ClientAuthenticator.TimeBetweenReauths) {
-          if (result.data && result.data.getNonce) {
+          if (result.data && result.data.getNonce && typeof result.data.getNonce === 'function') {
             this._authenticate(result.data.getNonce());
           }
         }

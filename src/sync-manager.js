@@ -505,11 +505,8 @@ class SyncManager extends Root {
    *
    */
   _xhrHandleServerError(result, logMsg, stringify) {
-    if (!result.request) {
-      return;
-    }
     // Execute all callbacks provided by the request
-    if (result.request.callback) result.request.callback(result);
+    if (result.request && result.request.callback && typeof result.request.callback === 'function') result.request.callback(result);
     if (stringify) {
       logger.error(logMsg +
         '\nREQUEST: ' + JSON.stringify(result.request.toObject(), null, 4) +

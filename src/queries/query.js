@@ -456,7 +456,7 @@ class Query extends Root {
       this.totalSize = Number(results.xhr.getResponseHeader('Layer-Count'));
       if (results.data.length < pageSize || results.data.length === this.totalSize) this.pagedToEnd = true;
       this._appendResults(results, false);
-    } else if (results.data && results.data.getNonce && results.data.getNonce()) {
+    } else if (results.data && results.data.getNonce && typeof results.data.getNonce === 'function' && results.data.getNonce()) {
       this.client.once('ready', () => {
         this._run();
       });
